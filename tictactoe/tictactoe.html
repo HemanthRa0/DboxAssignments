@@ -1,0 +1,215 @@
+<html>
+    <head>
+        <link rel = "stylesheet" href="style.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    </head>
+    <body>
+        <table id="scoreboard" align="center">
+            <tr>
+    <td> Player 1 </td>
+    <td width="30"> &nbsp; </td>
+    <td> Player 2 </td>
+</tr>
+<tr>
+    <td class="score" id="player1">
+        0 
+    </td>
+    <td> &nbsp; </td>
+    <td class="score" id="player2">
+        0 
+    </td>
+</tr>
+</table>
+
+
+<div id="placeholder"></div>
+
+<div style="display: flex; justify-content: center;">
+    <button class="btn btn-danger" onclick="restart()">
+        Reset
+    </button>
+</div>
+</body>
+<script>
+function TicTacToe(placeholder, grid_size, callback) {
+this.placeholder = placeholder;
+this.paint(grid_size);
+
+this.callback = callback;
+
+this.scores = {
+    X: 0,
+    O: 0
+};
+
+this.marks = {
+    X: "X",  
+    O: "O",  
+    count: 0 
+};
+
+return this;
+}
+
+TicTacToe.prototype.paint = function(grid_size) {
+
+var self = this;
+self.grid_size = grid_size;
+
+var html = '<table id="tic-tac-toe" align="center">';
+
+for(var i = 0; i < grid_size; i++) {
+    html += '<tr>';
+    for(var j = 0; j < grid_size; j++) {
+        html+= '<td></td>';
+    }
+    html += '</tr>';
+}
+
+html += '</table>';
+
+self.placeholder.innerHTML = html;
+
+
+self.columns = self.placeholder.getElementsByTagName("td");
+
+for(i = 0; i < this.columns.length; i++) {
+    self.columns[i].addEventListener("click", markHandler);
+}
+
+function markHandler(e) {
+    self.mark(e.target);
+}
+
+};
+
+TicTacToe.prototype.mark = function(column) {
+
+
+if(column.innerHTML) {
+    return;
+}
+
+
+this.marks.count++;
+
+var current_mark = this.marks.count % 2 === 1 ? this.marks.X : this.marks.O;
+
+column.innerHTML = current_mark;
+column.classList.add(current_mark);
+
+
+if(this.didWin(current_mark)) {
+    
+    if(this.marks.count % 2 === 1) {
+        this.scores.X++;
+    } else {
+        this.scores.O++;
+    }
+   
+    this.callback(current_mark, this.scores);
+} else if(this.marks.count === this.columns.length) {
+   
+    this.callback("draw");
+}
+
+};
+
+
+
+TicTacToe.prototype.didWin = function(mark) {
+
+var grid_size = this.grid_size;
+var horizontal_count,
+    vertical_count,
+    right_to_left_count = 0,
+    left_to_right_count = 0;
+
+for(var i = 0; i < grid_size; i++) {
+
+    horizontal_count = vertical_count = 0;
+
+    for(var j = 0; j < grid_size; j++) {
+
+        if(this.columns[i * grid_size + j].innerHTML == mark) {
+            horizontal_count++;
+        }
+
+        if(this.columns[j * grid_size + i].innerHTML == mark) {
+            vertical_count++;
+        }
+
+    }
+
+    if(horizontal_count == grid_size || vertical_count == grid_size) {
+        return true;	
+    }
+
+
+    if(this.columns[i * grid_size + i].innerHTML == mark) {
+        right_to_left_count++;
+    }
+
+
+    if(this.columns[(grid_size - 1) * (i+1)].innerHTML == mark) {
+        left_to_right_count++;
+    }
+
+} 
+
+
+if(right_to_left_count == grid_size || left_to_right_count == grid_size) {
+    return true;	
+}
+
+return false;
+};
+
+TicTacToe.prototype.empty = function() {
+
+for(var i = 0; i < this.columns.length; i++) {
+    this.columns[i].innerHTML = '';
+    this.columns[i].classList.remove(this.marks.X);
+    this.columns[i].classList.remove(this.marks.O);
+
+}
+
+this.marks.count = 0;
+};
+
+TicTacToe.prototype.reset = function() {
+this.empty();
+this.scores = {
+    X: 0,
+    O: 0
+};
+};
+
+var placeholder = document.getElementById("placeholder");
+
+var tictactoe = new TicTacToe(placeholder, 3, onResult);
+
+function onResult(result, scores) {
+if(result == 'draw') {
+    alert("It's a draw !");
+} else {
+    alert(result + " has won");
+    updateScores(scores.X, scores.O);
+}
+tictactoe.empty();
+}
+
+function updateScores(X, O) {
+document.querySelector("#scoreboard #player1").innerHTML = X;
+document.querySelector("#scoreboard #player2").innerHTML = O;	
+}
+
+function restart(grid_size) {
+tictactoe.reset();
+updateScores(0, 0);
+if(grid_size) {
+    tictactoe.paint(grid_size);
+}
+}
+</script>
+</html>
