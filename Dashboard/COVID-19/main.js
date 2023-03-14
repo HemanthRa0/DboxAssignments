@@ -41,9 +41,8 @@ async function getapi(keyword=""){
         div.innerHTML = `
         <div class="card-body bg-info-subtle rounded-4">
         <h5 class="" rounded-4>${ele.country}</h5>
-        <div class="card-title">Active cases : ${ele.cases.active === null?0:ele.cases.active}</div>
-        <h5 class="card-title">Deaths : "${ele.deaths.total===null?0:ele.deaths.total}</h5>
-        ${ele.year}
+        <div class="card-title">Active cases : <h5 class="text-danger">${ele.cases.active === null?0:ele.cases.active}</h5></div>
+        <h4 class="card-title">Deaths : <h5 class="text-danger">${ele.deaths.total===null?0:ele.deaths.total}</h5></h4>
         <p class="card-text">As on : ${ele.day}</p>
         
         </div>`

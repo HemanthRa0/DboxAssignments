@@ -17,8 +17,8 @@ xhr.open("GET", url2);
 xhr.setRequestHeader("X-RapidAPI-Key", "a7cb5fcc0bmsh935f7f3e37d8051p13ee02jsn3b52d18ebe94");
 xhr.setRequestHeader("X-RapidAPI-Host", "imdb-top-100-movies.p.rapidapi.com");
 
-xhr.send(data);  */
-
+xhr.send(data); 
+ */
 let ImdbData = localStorage.getItem("ImdbData")
 ImdbData = JSON.parse(ImdbData)
 console.log(ImdbData)
